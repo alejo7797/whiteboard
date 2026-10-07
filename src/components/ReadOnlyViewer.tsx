@@ -77,7 +77,7 @@ export default function ReadOnlyViewer({
 	const [scene, setScene] = useState<SceneState | null>(null)
 	const [error, setError] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
-	const { theme } = useThemeHandling()
+	const { editorTheme } = useThemeHandling()
 
 	const langCode = useMemo(() => document.documentElement.lang || 'en', [])
 
@@ -203,7 +203,7 @@ export default function ReadOnlyViewer({
 					viewModeEnabled
 					zenModeEnabled={false}
 					gridModeEnabled={false}
-					theme={theme}
+					theme={editorTheme}
 					name={title}
 					UIOptions={{ canvasActions }}
 					langCode={langCode}

@@ -127,7 +127,7 @@ export default function App({
 		updateLang: state.updateLang,
 	})))
 
-	const { theme } = useThemeHandling()
+	const { editorTheme, appTheme, setAppTheme } = useThemeHandling()
 	const { renderSmartPicker } = useSmartPicker()
 	const { renderTable } = useTableInsertion()
 	const { renderAssistant } = useAssistant()
@@ -616,6 +616,7 @@ export default function App({
 
 		return {
 			loadScene: false,
+			toggleTheme: true,
 		}
 	}, [isVersionPreview])
 
@@ -705,7 +706,7 @@ export default function App({
 					onChange={handleOnChange}
 					viewModeEnabled={isReadOnly}
 					gridModeEnabled={gridModeEnabled}
-					theme={theme}
+					theme={editorTheme}
 					name={fileNameWithoutExtension}
 					UIOptions={{
 						canvasActions,
@@ -764,6 +765,8 @@ export default function App({
 							onToggleTimer={handleToggleTimer}
 							gridModeEnabled={gridModeEnabled}
 							onToggleGrid={() => setGridModeEnabled(!gridModeEnabled)}
+							theme={appTheme}
+							onThemeChange={setAppTheme}
 						/>
 					)}
 				</Excalidraw>
