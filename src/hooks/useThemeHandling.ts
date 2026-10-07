@@ -3,35 +3,49 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-import { useState, useEffect } from 'react'
+import { THEME } from '@nextcloud/excalidraw'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import type { Theme } from '@excalidraw/excalidraw/types/types'
 
+const STORAGE_KEY = 'whiteboard-theme'
+
+function getDarkThemeMediaQuery(): MediaQueryList | undefined {
+	return window.matchMedia?.('(prefers-color-scheme: dark)')
+}
+
 export function useThemeHandling() {
-	const [theme, setTheme] = useState<Theme>('light')
-
-	const isDarkMode = () => {
-		const ncThemes = document.body.dataset?.themes
+	const [appTheme, setAppTheme] = useState<Theme | 'system'>(() => {
 		return (
-			(window.matchMedia('(prefers-color-scheme: dark)').matches
-				&& (ncThemes === undefined
-					|| ncThemes?.indexOf('light') === -1))
-			|| ncThemes?.indexOf('dark') > -1
+			(localStorage.getItem(STORAGE_KEY) as Theme | 'system' | null) || THEME.LIGHT
 		)
-	}
+	})
+	const [editorTheme, setEditorTheme] = useState<Theme>(THEME.LIGHT)
 
 	useEffect(() => {
-		setTheme(isDarkMode() ? 'dark' : 'light')
-	}, [])
+		const mediaQuery = getDarkThemeMediaQuery()
 
-	useEffect(() => {
-		const themeChangeListener = () =>
-			setTheme(isDarkMode() ? 'dark' : 'light')
-		const mq = window.matchMedia('(prefers-color-scheme: dark)')
-		mq.addEventListener('change', themeChangeListener)
-		return () => {
-			mq.removeEventListener('change', themeChangeListener)
+		const handleChange = (e: MediaQueryListEvent) => {
+			setEditorTheme(e.matches ? THEME.DARK : THEME.LIGHT)
 		}
-	}, [])
 
-	return { theme }
+		if (appTheme === 'system') {
+			mediaQuery?.addEventListener('change', handleChange)
+		}
+
+		return () => {
+			mediaQuery?.removeEventListener('change', handleChange)
+		}
+	}, [appTheme])
+
+	useLayoutEffect(() => {
+		localStorage.setItem(STORAGE_KEY, appTheme)
+
+		if (appTheme === 'system') {
+			setEditorTheme(getDarkThemeMediaQuery()?.matches ? THEME.DARK : THEME.LIGHT)
+		} else {
+			setEditorTheme(appTheme)
+		}
+	}, [appTheme])
+
+	return { editorTheme, appTheme, setAppTheme }
 }

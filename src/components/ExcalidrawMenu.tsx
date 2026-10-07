@@ -13,7 +13,7 @@ import { PresentationMenuItem } from './Presentation'
 import { CreatorMenuItem } from './CreatorMenuItem'
 import { t } from '@nextcloud/l10n'
 import { useShallow } from 'zustand/react/shallow'
-import type { ExcalidrawImperativeAPI } from '@excalidraw/excalidraw/types/types'
+import type { ExcalidrawImperativeAPI, Theme } from '@excalidraw/excalidraw/types/types'
 import { useExcalidrawStore } from '../stores/useExcalidrawStore'
 import type { RecordingHookState } from '../types/recording'
 import type { PresentationState } from '../types/presentation'
@@ -27,9 +27,11 @@ interface ExcalidrawMenuProps {
 	onToggleTimer: () => void
 	gridModeEnabled: boolean
 	onToggleGrid: () => void
+	theme: Theme | 'system'
+	onThemeChange: (theme: Theme | 'system') => void
 }
 
-export const ExcalidrawMenu = memo(function ExcalidrawMenu({ fileNameWithoutExtension, recordingState, presentationState, isTimerVisible, onToggleTimer, gridModeEnabled, onToggleGrid }: ExcalidrawMenuProps) {
+export const ExcalidrawMenu = memo(function ExcalidrawMenu({ fileNameWithoutExtension, recordingState, presentationState, isTimerVisible, onToggleTimer, gridModeEnabled, onToggleGrid, theme, onThemeChange }: ExcalidrawMenuProps) {
 	const isMacPlatform = typeof navigator !== 'undefined' && (navigator.userAgentData?.platform === 'macOS' || /Mac|iPhone|iPad/.test(navigator.platform ?? ''))
 	const isDirectEditing = loadState('whiteboard', 'directEditing', false)
 	const { excalidrawAPI } = useExcalidrawStore(useShallow(state => ({
@@ -179,7 +181,11 @@ export const ExcalidrawMenu = memo(function ExcalidrawMenu({ fileNameWithoutExte
 
 	return (
 		<MainMenu>
-			<MainMenu.DefaultItems.ToggleTheme />
+			<MainMenu.DefaultItems.ToggleTheme
+				allowSystemTheme
+				theme={theme}
+				onSelect={onThemeChange}
+			/>
 			<MainMenu.DefaultItems.ChangeCanvasBackground />
 			{!isDirectEditing && <>
 				<MainMenu.Item
