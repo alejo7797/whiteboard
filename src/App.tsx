@@ -132,6 +132,7 @@ export default function App({
 	})))
 
 	const { editorTheme, appTheme, setAppTheme } = useThemeHandling()
+	const themeScope = { [`data-theme-${editorTheme}`]: '' }
 	const { renderSmartPicker } = useSmartPicker()
 	const { renderTable } = useTableInsertion()
 	const { renderAssistant } = useAssistant()
@@ -650,7 +651,7 @@ export default function App({
 
 	if (isLoading) {
 		return (
-			<div className="App" style={{ display: 'flex', flexDirection: 'column' }}>
+			<div className="App" {...themeScope} style={{ display: 'flex', flexDirection: 'column' }}>
 				<div className="App-loading" style={{
 					flex: 1,
 					display: 'flex',
@@ -696,7 +697,7 @@ export default function App({
 	) => prepareDuplicatedElements(nextElements, previousElements, beforeElementCreated)
 
 	return (
-		<div className={appClassName} style={{ display: 'flex', flexDirection: 'column' }}>
+		<div className={appClassName} {...themeScope} style={{ display: 'flex', flexDirection: 'column' }}>
 			<div className="excalidraw-wrapper" style={{ flex: 1, height: '100%', position: 'relative' }}>
 				{!isVersionPreview && <MemoizedNetworkStatusIndicator />}
 				<MemoizedAuthErrorNotification />

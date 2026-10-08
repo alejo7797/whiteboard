@@ -78,6 +78,7 @@ export default function ReadOnlyViewer({
 	const [error, setError] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
 	const { editorTheme } = useThemeHandling()
+	const themeScope = { [`data-theme-${editorTheme}`]: '' }
 
 	const langCode = useMemo(() => document.documentElement.lang || 'en', [])
 
@@ -164,7 +165,7 @@ export default function ReadOnlyViewer({
 
 	if (error) {
 		return (
-			<div className="App App--version-preview" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+			<div className="App App--version-preview" {...themeScope} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 				<div>{error}</div>
 			</div>
 		)
@@ -172,7 +173,7 @@ export default function ReadOnlyViewer({
 
 	if (isLoading || !scene) {
 		return (
-			<div className="App" style={{ display: 'flex', flexDirection: 'column' }}>
+			<div className="App" {...themeScope} style={{ display: 'flex', flexDirection: 'column' }}>
 				<div className="App-loading" style={{
 					flex: 1,
 					display: 'flex',
@@ -196,7 +197,7 @@ export default function ReadOnlyViewer({
 	}
 
 	return (
-		<div className="App App--version-preview" style={{ display: 'flex', flexDirection: 'column' }}>
+		<div className="App App--version-preview" {...themeScope} style={{ display: 'flex', flexDirection: 'column' }}>
 			<div className="excalidraw-wrapper" style={{ flex: 1, height: '100%', position: 'relative' }}>
 				<ReadOnlyExcalidraw
 					initialData={scene}
